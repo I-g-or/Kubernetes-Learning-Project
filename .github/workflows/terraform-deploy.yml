@@ -1,4 +1,4 @@
-name: Provision EC2 instance
+name: Provision Hetzner infrastructure
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
         working-directory: terraform
         run: |
           terraform init -input=false -backend=false
-          terraform fmt -recursive
+          terraform fmt -check -recursive
           terraform validate 
 
   tflint:
