@@ -79,8 +79,7 @@ jobs:
         run: |
           terraform plan \
             -var="hcloud_token=${{ secrets.HCLOUD_TOKEN }}" \
-            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
-            -var="aws_region=${{ secrets.AWS_REGION }}"
+            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" 
 
       - name: Terraform apply
         id: terraform_apply
@@ -89,6 +88,5 @@ jobs:
           terraform apply \
             -auto-approve \
             -var="hcloud_token=${{ secrets.HCLOUD_TOKEN }}" \
-            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
-            -var="aws_region=${{ secrets.AWS_REGION }}"
+            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" 
  

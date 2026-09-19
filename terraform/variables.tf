@@ -32,8 +32,3 @@ variable "ssh_public_key" {
   description = "SSH public key for Hetzner VM"
 }
 
-variable "aws_region" {
-  description = "AWS region"
-  type        = string
-  default     = "us-east-1"
-}
