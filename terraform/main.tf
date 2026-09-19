@@ -32,6 +32,27 @@ runcmd:
   - chmod 600 /root/.kube/config
   - echo 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml' >> /root/.bashrc
   - echo 'alias k=kubectl' >> /root/.bashrc
+  - mkdir -p /root/apps/2048
+  - |
+    echo "Downloading 2048 manifest from GitHub..."
+    curl -sfL \
+      https://raw.githubusercontent.com/I-g-or/Kubernetes-Learning-Project/feature/hetzner-infrastructure/apps/2048/2048.yml \
+      -o /root/apps/2048/2048.yml
+  - |
+    echo "Waiting for K3s to be ready..."
+    for i in $(seq 1 60); do
+      if kubectl get nodes 2>/dev/null | grep -q Ready; then
+        echo "K3s is ready!"
+        break
+      fi
+      echo "Attempt $i/60: K3s not ready yet..."
+      sleep 5
+    done
+  - |
+    echo "Deploying 2048 application..."
+    kubectl apply -f /root/apps/2048/2048.yml
+    echo "2048 application deployed successfully!"
+  - kubectl get all -n game-2048
 EOF
 
   labels = {
