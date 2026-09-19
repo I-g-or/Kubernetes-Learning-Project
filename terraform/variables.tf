@@ -18,7 +18,7 @@ variable "hcloud_server_location" {
 variable "hcloud_server_type" {
   description = "Hetzner Cloud server type"
   type        = string
-  default     = "cx12"
+  default     = "cx23"
 }
 
 variable "hcloud_token" {
