@@ -24,7 +24,6 @@ runcmd:
     curl -sfL https://get.k3s.io | \
     INSTALL_K3S_EXEC="server \
       --write-kubeconfig-mode 644 \
-      --disable traefik \
       --tls-san $(curl -s http://169.254.169.254/hetzner/v1/metadata/public-ipv4)" \
     sh -
   - mkdir -p /root/.kube
