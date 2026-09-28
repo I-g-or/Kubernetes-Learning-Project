@@ -31,12 +31,6 @@ runcmd:
   - chmod 600 /root/.kube/config
   - echo 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml' >> /root/.bashrc
   - echo 'alias k=kubectl' >> /root/.bashrc
-  - mkdir -p /root/apps/2048
-  - |
-    echo "Downloading 2048 manifest from GitHub..."
-    curl -sfL \
-      https://raw.githubusercontent.com/I-g-or/Kubernetes-Learning-Project/feature/hetzner-infrastructure/apps/2048/2048.yml \
-      -o /root/apps/2048/2048.yml
   - |
     echo "Waiting for K3s to be ready..."
     for i in $(seq 1 60); do
@@ -47,12 +41,23 @@ runcmd:
       echo "Attempt $i/60: K3s not ready yet..."
       sleep 5
     done
+  - git clone https://github.com/I-g-or/Kubernetes-Learning-Project.git /opt
   - |
-    echo "Deploying 2048 application..."
-    kubectl apply -f /root/apps/2048/2048.yml
-    echo "2048 application deployed successfully!"
-  - kubectl get all -n game-2048
+    echo "Deploying application..."
+    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/
 EOF
+  # - mkdir -p /root/apps/2048
+  # - |
+  #   echo "Downloading 2048 manifest from GitHub..."
+  #   curl -sfL \
+  #     https://raw.githubusercontent.com/I-g-or/Kubernetes-Learning-Project/feature/hetzner-infrastructure/apps/2048/2048.yml \
+  #     -o /root/apps/2048/2048.yml
+  # - |
+  #   echo "Deploying 2048 application..."
+  #   kubectl apply -f /root/apps/2048/2048.yml
+  #   echo "2048 application deployed successfully!"
+  # - kubectl get all -n game-2048
+
 
   labels = {
     role        = "k3s"

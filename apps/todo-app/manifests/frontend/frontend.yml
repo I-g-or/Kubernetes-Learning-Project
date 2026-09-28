@@ -1,0 +1,111 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: todo-app
+  labels:
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/part-of: todo-app
+    app.kubernetes.io/component: ui
+data:
+  REACT_APP_API_ENDPOINT: "http://localhost:8080"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: todo-app
+  labels:
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/part-of: todo-app
+    app.kubernetes.io/component: ui
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/component: ui
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: todo-app
+  labels:
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/part-of: todo-app
+    app.kubernetes.io/component: ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: frontend
+      app.kubernetes.io/component: ui
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: frontend
+        app.kubernetes.io/part-of: todo-app
+        app.kubernetes.io/component: ui
+    spec:
+      initContainers:
+        - name: env-generator
+          image: abdennour/dotenv-to-js-object:4ea
+          imagePullPolicy: IfNotPresent
+          args:
+            - --dest=/data
+            - --env-vars-filter=REACT_APP_
+            - --run-as=job
+          envFrom:
+            - configMapRef:
+                name: frontend-config
+          volumeMounts:
+            - name: data-env
+              mountPath: /data
+
+      containers:
+        - name: frontend
+          image: abdennour/go-to-do-frontend:rc
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: data-env
+              mountPath: /opt/app/config
+              readOnly: true
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+      volumes:
+        - name: data-env
+          emptyDir: {}
