@@ -17,6 +17,7 @@ packages:
   - curl
   - apt-transport-https
   - ca-certificates
+  - git
 
 runcmd:
   - sleep 10
@@ -24,7 +25,8 @@ runcmd:
     curl -sfL https://get.k3s.io | \
     INSTALL_K3S_EXEC="server \
       --write-kubeconfig-mode 644 \
-      --tls-san $(curl -s http://169.254.169.254/hetzner/v1/metadata/public-ipv4)" \
+      --tls-san $(curl -s http://169.254.169.254/hetzner/v1/metadata/public-ipv4) \
+      --disable=traefik" \
     sh -
   - mkdir -p /root/.kube
   - cp /etc/rancher/k3s/k3s.yaml /root/.kube/config
@@ -41,8 +43,11 @@ runcmd:
       echo "Attempt $i/60: K3s not ready yet..."
       sleep 5
     done
-  - git clone https://github.com/I-g-or/Kubernetes-Learning-Project.git /opt
+  - git clone -b feature/hetzner-infrastructure https://github.com/I-g-or/Kubernetes-Learning-Project.git /opt
   - |
+    PUBLIC_IP=$(curl -s http://169.254.169.254/hetzner/v1/metadata/public-ipv4)
+    echo "Public IP: $PUBLIC_IP"
+    export PUBLIC_IP
     echo "Deploying application..."
     kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/
 EOF

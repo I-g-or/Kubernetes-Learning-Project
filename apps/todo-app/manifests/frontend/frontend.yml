@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/part-of: todo-app
     app.kubernetes.io/component: ui
 data:
-  REACT_APP_API_ENDPOINT: "http://localhost:8080"
+  REACT_APP_API_ENDPOINT: "http://${PUBLIC_IP}"
 
 ---
 apiVersion: v1
