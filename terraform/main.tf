@@ -50,10 +50,10 @@ runcmd:
     export PUBLIC_IP
     echo "Deploying application..."
     kubectl apply -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/namespace.yml
-    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/ingress/
     kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/backend/
     kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/db/
     kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/frontend/
+    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/ingress/
 EOF
   # - mkdir -p /root/apps/2048
   # - |
