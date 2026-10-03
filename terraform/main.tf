@@ -43,13 +43,17 @@ runcmd:
       echo "Attempt $i/60: K3s not ready yet..."
       sleep 5
     done
-  - git clone -b feature/hetzner-infrastructure https://github.com/I-g-or/Kubernetes-Learning-Project.git /opt
+  - git clone https://github.com/I-g-or/Kubernetes-Learning-Project.git /opt/Kubernetes-Learning-Project
   - |
     PUBLIC_IP=$(curl -s http://169.254.169.254/hetzner/v1/metadata/public-ipv4)
     echo "Public IP: $PUBLIC_IP"
     export PUBLIC_IP
     echo "Deploying application..."
-    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/
+    kubectl apply -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/namespace.yml
+    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/ingress/
+    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/backend/
+    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/db/
+    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/frontend/
 EOF
   # - mkdir -p /root/apps/2048
   # - |
