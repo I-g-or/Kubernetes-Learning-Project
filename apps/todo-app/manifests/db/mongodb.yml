@@ -12,8 +12,8 @@ type: Opaque
 stringData:
   DB_NAME: todoapp
   DB_PASSWORD: todoapp
-  DB_DATABASE: todolist
-  DB_CONNECTION: "mongodb://todoapp:todoapp@mongodb:27017/todolist"
+  DB_DATABASE: todoapp
+  DB_CONNECTION: "mongodb://todoapp:todoapp@mongodb:27017/todoapp"
 
 ---
 apiVersion: v1
@@ -141,11 +141,11 @@ metadata:
   namespace: todo-app
 data:
   init-user.js: |
-    db = db.getSiblingDB('todolist');
+    db = db.getSiblingDB('todoapp');
     db.createUser({
       user: 'todoapp',
       pwd: 'todoapp',
-      roles: [{ role: 'readWrite', db: 'todolist' }]
+      roles: [{ role: 'readWrite', db: 'todoapp' }]
     });
 
 ---
