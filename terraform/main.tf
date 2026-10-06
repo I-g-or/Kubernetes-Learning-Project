@@ -54,6 +54,7 @@ runcmd:
     kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/db/
     kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/frontend/
     kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/ingress/
+    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/ingress/ingress.yml
 EOF
   # - mkdir -p /root/apps/2048
   # - |
