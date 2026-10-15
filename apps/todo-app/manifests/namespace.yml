@@ -5,3 +5,11 @@ metadata:
   labels:
     app.kubernetes.io/name: todo-app
     app.kubernetes.io/part-of: todo-app
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    app.kubernetes.io/name: monitoring
+    app.kubernetes.io/part-of: todo-app
