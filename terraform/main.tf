@@ -50,10 +50,17 @@ runcmd:
     export PUBLIC_IP
     echo "Deploying application..."
     kubectl apply -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/namespace.yml
-    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/backend/
-    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/db/
-    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/frontend/
+    kubectl apply --server-side --force-conflicts -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/monitoring/prometheus/prometheus-operator.yml
+    kubectl wait --for=condition=Established crd/prometheuses.monitoring.coreos.com --timeout=60s
+    kubectl wait --for=condition=Established crd/servicemonitors.monitoring.coreos.com --timeout=60s
     kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/monitoring/
+    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/db/
+    kubectl wait --for=condition=Ready pod \
+      -l app=mongodb \
+      -n todo-app \
+      --timeout=180s
+    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/backend/
+    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/frontend/
     kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/ingress/deploy.yml
     kubectl wait --namespace ingress-nginx \
       --for=condition=ready pod \
