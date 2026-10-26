@@ -53,6 +53,7 @@ runcmd:
     kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/backend/
     kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/db/
     kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/frontend/
+    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/monitoring/
     kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/ingress/deploy.yml
     kubectl wait --namespace ingress-nginx \
       --for=condition=ready pod \
