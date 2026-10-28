@@ -46,6 +46,31 @@ data:
           maxLines: 500          
 
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-provider
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/component: ui
+    app.kubernetes.io/part-of: monitoring
+data:
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        updateIntervalSeconds: 30
+        options:
+          path: /var/lib/grafana/dashboards
+          foldersFromFilesStructure: false
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -122,12 +147,30 @@ spec:
               readOnly: true
             - name: storage
               mountPath: /var/lib/grafana
+            - name: dashboard-provider
+              mountPath: /etc/grafana/provisioning/dashboards
+              readOnly: true
+            - name: dashboards
+              mountPath: /var/lib/grafana/dashboards
+              readOnly: true
       volumes:
         - name: datasources
           configMap:
             name: grafana-datasources
         - name: storage
           emptyDir: {}
+        - name: dashboard-provider
+          configMap:
+            name: grafana-dashboard-provider
+        - name: dashboards
+          projected:
+            sources:
+              - configMap:
+                  name: grafana-dashboard-node
+              - configMap:
+                  name: grafana-dashboard-k8s
+              - configMap:
+                  name: grafana-dashboard-loki
 
 ---
 apiVersion: v1
