@@ -36,6 +36,15 @@ data:
         jsonData:
           timeInterval: 30s
 
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki.monitoring.svc:3100
+        editable: true
+        jsonData:
+          timeInterval: 30s
+          maxLines: 500          
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -84,6 +93,10 @@ spec:
               value: /var/lib/grafana
             - name: GF_PATHS_PROVISIONING
               value: /etc/grafana/provisioning
+            - name: GF_SERVER_ROOT_URL
+              value: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+            - name: GF_SERVER_SERVE_FROM_SUB_PATH
+              value: "true"
           resources:
             requests:
               cpu: 100m

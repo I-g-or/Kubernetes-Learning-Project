@@ -63,10 +63,6 @@ spec:
                   echo "=== MongoDB backup started at ${TIMESTAMP} ==="
                   echo "Target: ${BACKUP_FILE}"
 
-                  # mongodump:
-                  #   --uri          — строка подключения (из Secret)
-                  #   --archive      — пишем в один файл вместо папки
-                  #   --gzip         — сжимаем
                   mongodump \
                     --uri="${DB_CONNECTION}" \
                     --archive="${BACKUP_FILE}" \

@@ -55,6 +55,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: node-exporter
+        app.kubernetes.io/component: exporter
+        app.kubernetes.io/part-of: monitoring
     spec:
       hostNetwork: true
       hostPID: true
