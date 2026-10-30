@@ -29,6 +29,7 @@ data:
     datasources:
       - name: Prometheus
         type: prometheus
+        uid: prometheus
         access: proxy
         url: http://prometheus.monitoring.svc:9090
         isDefault: true
@@ -166,9 +167,9 @@ spec:
           projected:
             sources:
               - configMap:
-                  name: grafana-dashboard-node
+                  name: grafana-dashboard-node 
               - configMap:
-                  name: grafana-dashboard-k8s
+                  name: grafana-dashboard-prometheus
               - configMap:
                   name: grafana-dashboard-loki
 
