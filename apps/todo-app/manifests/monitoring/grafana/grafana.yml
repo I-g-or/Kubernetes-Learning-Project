@@ -37,8 +37,9 @@ data:
         jsonData:
           timeInterval: 30s
 
-      - name: Loki
+      - name: loki
         type: loki
+        uid: loki
         access: proxy
         url: http://loki.monitoring.svc:3100
         editable: true
