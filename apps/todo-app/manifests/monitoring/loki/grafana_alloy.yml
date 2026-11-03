@@ -77,9 +77,38 @@ data:
       role = "pod"
     }
 
+    // Relabeling
+    discovery.relabel "pods" {
+      targets = discovery.kubernetes.pods.targets
+
+      // namespace
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+
+      // pod
+      rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+
+      // container
+      rule {
+        source_labels = ["__meta_kubernetes_pod_container_name"]
+        target_label  = "container"
+      }
+
+      // job = namespace/container
+      rule {
+        source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_container_name"]
+        separator     = "/"
+        target_label  = "job"
+      }
+
     // Collecting logs via the Kubernetes API
     loki.source.kubernetes "pods" {
-      targets    = discovery.kubernetes.pods.targets
+      targets    = discovery.relabel.pods.output
       forward_to = [loki.write.default.receiver]
     }
 
