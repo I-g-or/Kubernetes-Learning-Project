@@ -168,7 +168,7 @@ spec:
           projected:
             sources:
               - configMap:
-                  name: grafana-dashboard-node 
+                  name: grafana-dashboard-node
               - configMap:
                   name: grafana-dashboard-prometheus
               - configMap:
