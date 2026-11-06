@@ -2,15 +2,29 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: todo-api-ingress
+  name: todo-app
   namespace: todo-app
+  labels:
+    app.kubernetes.io/name: todo-app
+    app.kubernetes.io/part-of: todo-app
+    app.kubernetes.io/component: ingress
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: letsencrypt-prod  #-staging
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - igor1.pp.ua
+      secretName: igor1-pp-ua-tls
+
   rules:
-    - http:
+    - host: igor1.pp.ua
+      http:
         paths:
+          # API
           - path: /api
             pathType: Prefix
             backend:
@@ -19,19 +33,7 @@ spec:
                 port:
                   number: 8080
 
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: todo-frontend-ingress
-  namespace: todo-app
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-spec:
-  ingressClassName: nginx
-  rules:
-    - http:
-        paths:
+          # Frontend
           - path: /
             pathType: Prefix
             backend:
@@ -39,3 +41,35 @@ spec:
                 name: frontend
                 port:
                   number: 8080
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/component: ingress
+    app.kubernetes.io/part-of: monitoring
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - igor1.pp.ua
+      secretName: igor1-pp-ua-tls
+  rules:
+    - host: igor1.pp.ua
+      http:
+        paths:
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
