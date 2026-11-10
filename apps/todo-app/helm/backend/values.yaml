@@ -12,10 +12,9 @@ service:
   port: 8080
   containerPort: 8080
 
-existingSecret:
-  name: db-secret
-  dbNameKey: DB_NAME
-  dbConnectionKey: DB_CONNECTION
+env:
+  DB_NAME: todoapp
+  DB_CONNECTION: "mongodb://todoapp:todoapp@mongodb:27017/todoapp"
 
 resources:
   requests:
