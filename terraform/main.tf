@@ -21,6 +21,7 @@ packages:
 
 runcmd:
   - sleep 10
+  # === Install Kubernetes ===
   - |
     curl -sfL https://get.k3s.io | \
     INSTALL_K3S_EXEC="server \
@@ -43,37 +44,39 @@ runcmd:
       echo "Attempt $i/60: K3s not ready yet..."
       sleep 5
     done
+
+  # === Install Helm ===
+  - | 
+    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+    chmod 700 get_helm.sh
+    ./get_helm.sh
+
+  # === Download Kubernetes Learning Project ===
   - git clone https://github.com/I-g-or/Kubernetes-Learning-Project.git /opt/Kubernetes-Learning-Project
   - |
     PUBLIC_IP=$(curl -s http://169.254.169.254/hetzner/v1/metadata/public-ipv4)
     echo "Public IP: $PUBLIC_IP"
     export PUBLIC_IP
-    echo "Deploying application..."
-    kubectl apply -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/namespace.yml
-    kubectl apply --server-side --force-conflicts -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/monitoring/prometheus/prometheus-operator.yml
-    kubectl wait --for=condition=Established crd/prometheuses.monitoring.coreos.com --timeout=60s
-    kubectl wait --for=condition=Established crd/servicemonitors.monitoring.coreos.com --timeout=60s
-    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/monitoring/
-    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/db/
-    sleep 120
-    kubectl wait --for=condition=Ready pod \
-      -l app=mongodb \
-      -n todo-app \
-      --timeout=300s
-    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/backend/
-    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/frontend/
-    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/ingress/deploy.yml
-    kubectl wait --namespace ingress-nginx \
-      --for=condition=ready pod \
-      --selector=app.kubernetes.io/component=controller \
-      --timeout=300s
-    kubectl apply -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/cert-manager/cert-manager.yml
-    kubectl wait --namespace cert-manager \
-          --for=condition=ready pod \
-          --selector=app.kubernetes.io/instance=cert-manager \
-          --timeout=300s
-    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/cert-manager/cluster-issuer.yml
-    kubectl apply -R -f /opt/Kubernetes-Learning-Project/apps/todo-app/manifests/ingress/ingress.yml
+
+# === Select deployment method ===
+# manifests: triggering a deployment based on a Kubernetes manifest
+# helm: triggering a deployment based on a Helm chart
+  - |
+    METHOD="helm"  # Default method
+
+    echo "Deployment method selected: $METHOD"
+    case "$METHOD" in
+      helm)
+        bash /opt/Kubernetes-Learning-Project/scripts/deploy-helm.sh
+        ;;
+      manifests)
+        bash /opt/Kubernetes-Learning-Project/scripts/deploy-manifests.sh
+        ;;
+      *)
+        echo "Unknown method: $METHOD"
+        exit 1
+        ;;
+    esac
 EOF
   # - mkdir -p /root/apps/2048
   # - |

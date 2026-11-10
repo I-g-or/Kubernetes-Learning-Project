@@ -1,0 +1,9 @@
+apiVersion: v2
+name: todo-app-backend
+description: Backend API for the Todo App
+type: application
+version: 0.1.0
+appVersion: "rc"
+maintainers:
+  - name: I-g-or
+    url: https://github.com/I-g-or/Kubernetes-Learning-Project
