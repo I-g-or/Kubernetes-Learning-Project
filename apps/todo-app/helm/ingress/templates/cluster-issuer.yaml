@@ -1,0 +1,44 @@
+{{- if .Values.clusterIssuers.staging.enabled }}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ .Values.clusterIssuers.staging.name }}
+  labels:
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/component: cluster-issuer
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  acme:
+    server: {{ .Values.clusterIssuers.staging.server }}
+    email: {{ .Values.clusterIssuers.email | quote }}
+    privateKeySecretRef:
+      name: {{ .Values.clusterIssuers.staging.privateKeySecretName }}
+    solvers:
+      - http01:
+          ingress:
+            class: {{ .Values.clusterIssuers.ingressClass }}
+{{- end }}
+
+{{- if .Values.clusterIssuers.prod.enabled }}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ .Values.clusterIssuers.prod.name }}
+  labels:
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/component: cluster-issuer
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  acme:
+    server: {{ .Values.clusterIssuers.prod.server }}
+    email: {{ .Values.clusterIssuers.email | quote }}
+    privateKeySecretRef:
+      name: {{ .Values.clusterIssuers.prod.privateKeySecretName }}
+    solvers:
+      - http01:
+          ingress:
+            class: {{ .Values.clusterIssuers.ingressClass }}
+{{- end }}
+

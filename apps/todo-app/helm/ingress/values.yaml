@@ -1,0 +1,46 @@
+name: todo-app
+
+host: igor1.pp.ua
+
+ingressClassName: nginx
+
+tls:
+  secretName: igor1-pp-ua-tls
+
+# cert-manager annotation: letsencrypt-prod or letsencrypt-staging
+clusterIssuer: letsencrypt-prod
+
+annotations:
+  nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+
+# Backend Service
+backend:
+  path: /api
+  pathType: Prefix
+  serviceName: backend
+  servicePort: 8080
+
+# Frontend Service
+frontend:
+  path: /
+  pathType: Prefix
+  serviceName: frontend
+  servicePort: 8080
+
+
+clusterIssuers:
+  email: igorrosp@gmail.com
+  ingressClass: nginx
+
+  staging:
+    enabled: false
+    name: letsencrypt-staging
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretName: letsencrypt-staging-account-key
+
+  prod:
+    enabled: true
+    name: letsencrypt-prod
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretName: letsencrypt-prod-account-key
