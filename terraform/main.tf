@@ -45,6 +45,12 @@ runcmd:
       sleep 5
     done
 
+  - |
+    mkdir -p ~/.kube
+    sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+    sudo chown $(id -u):$(id -g) ~/.kube/config
+    sudo chmod 600 ~/.kube/config
+
   # === Install Helm ===
   - | 
     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
