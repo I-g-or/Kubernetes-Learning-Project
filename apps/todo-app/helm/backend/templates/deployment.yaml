@@ -5,14 +5,13 @@ metadata:
   labels:
     {{- include "backend.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "backend.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "backend.labels" . | nindent 8 }}
+        {{- include "backend.selectorLabels" . | nindent 8 }}
     spec:
       affinity:
         podAntiAffinity:
