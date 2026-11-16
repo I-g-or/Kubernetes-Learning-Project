@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.frontendName }}-pdb
+  labels:
+    {{- include "frontend.labels" . | nindent 4 }}
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+     {{- include "frontend.selectorLabels" . | nindent 6 }}

@@ -1,4 +1,4 @@
-replicaCount: 1
+replicaCount: 3
 
 backendName: backend
 
@@ -39,3 +39,9 @@ livenessProbe:
   periodSeconds: 20
   timeoutSeconds: 3
   failureThreshold: 3
+
+autoscaling:
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 70

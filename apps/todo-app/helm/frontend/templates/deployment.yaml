@@ -27,6 +27,19 @@ spec:
             - name: {{ .Values.volume.name }}
               mountPath: {{ .Values.initContainer.volumeMountPath }}
 
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - {{ .Values.frontendName }}
+                topologyKey: kubernetes.io/hostname
+
       containers:
         - name: frontend
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
