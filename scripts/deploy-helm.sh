@@ -14,6 +14,8 @@ CHARTS_DIR="${REPO_ROOT}/apps/todo-app/helm"
 NAMESPACE="todo-app"
 HOST="igor1.pp.ua"
 
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+
 kubectl create namespace "${NAMESPACE}" --dry-run=client -o yaml | kubectl apply -f -
 
 # === Install NGINX Ingress Controller ===
