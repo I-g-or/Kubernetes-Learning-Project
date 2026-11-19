@@ -1,5 +1,5 @@
 architecture: replicaset
-replicaCount: 3    # Primary + 2 Secondary
+replicaCount: 1
 replicaSetName: rs0
 
 auth:
@@ -55,3 +55,11 @@ readinessProbe:
   timeoutSeconds: 5
   failureThreshold: 6
   successThreshold: 1
+
+startupProbe:
+  enabled: true
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 30
+  successThreshold: 1  
