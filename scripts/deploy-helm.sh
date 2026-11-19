@@ -56,14 +56,7 @@ helm repo update
 
 helm upgrade --install mongodb bitnami/mongodb \
   --namespace "${NAMESPACE}" \
-  --set architecture=standalone \
-  --set auth.rootUser=root \
-  --set auth.rootPassword=todoapp \
-  --set auth.username=todoapp \
-  --set auth.password=todoapp \
-  --set auth.database=todoapp \
-  --set persistence.size=5Gi \
-  --set service.nameOverride=mongodb \
+  -f /opt/Kubernetes-Learning-Project/apps/todo-app/helm/mongodb/values.yaml \
   --wait \
   --timeout 5m
 
@@ -77,7 +70,7 @@ helm upgrade --install todo-backend "${CHARTS_DIR}/backend" \
   --namespace "${NAMESPACE}" \
   --set image.repository=abdennour/go-to-do-api \
   --set image.tag=rc \
-  --set env.DB_CONNECTION="mongodb://todoapp:todoapp@mongodb:27017/todoapp" \
+  --set env.DB_CONNECTION="mongodb://todoapp:todoapp@mongodb:27017/todoapp?replicaSet=rs0" \
   --set env.DB_NAME=todoapp \
   --wait \
   --timeout 3m

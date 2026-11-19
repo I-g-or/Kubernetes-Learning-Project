@@ -12,7 +12,7 @@ service:
 
 env:
   DB_NAME: todoapp
-  DB_CONNECTION: "mongodb://todoapp:todoapp@mongodb:27017/todoapp"
+  DB_CONNECTION: "mongodb://todoapp:todoapp@mongodb:27017/todoapp?replicaSet=rs0"
 
 resources:
   requests:
