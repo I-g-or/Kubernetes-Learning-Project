@@ -1,6 +1,8 @@
 architecture: replicaset
 replicaCount: 1
 replicaSetName: rs0
+arbiter:
+  enabled: false
 
 auth:
   enabled: true
