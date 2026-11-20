@@ -14,7 +14,7 @@ auth:
     - todoapp
   databases:
     - todoapp
-  replicaSetKey: "ReplicaSetKey123!"
+  replicaSetKey: "ReplicaSetKey123"
 
 resources:
   requests:
