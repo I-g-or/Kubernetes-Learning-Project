@@ -1,45 +1,84 @@
+# Default values for todo-app backend
+
+# backendName is the base name used for Deployment, Service, HPA and PDB resources
 backendName: backend
 
+# image configures the container image for the backend API
 image:
+  # image.repository is the Docker image repository (without tag)
   repository: abdennour/go-to-do-api
+  # image.tag overrides the image tag whose default is the chart appVersion.
   tag: rc
+  # image.pullPolicy defines when the image should be pulled
   pullPolicy: IfNotPresent
 
+# service configures the Kubernetes Service
 service:
+  # service.type is the Service type
   type: ClusterIP
+  # service.port is the port the Service listens
   port: 8080
+  # service.containerPort is the port the container listens on inside the Pod
   containerPort: 8080
 
+# These are application-specific configuration values
+# env contains environment variables passed to the backend container
 env:
+  # env.DB_NAME is the MongoDB database name
   DB_NAME: todoapp
+  # env.DB_CONNECTION is the full MongoDB connection string
   DB_CONNECTION: "mongodb://todoapp:todoapp@mongodb:27017/todoapp?replicaSet=rs0"
 
+# resources defines CPU and memory requests/limits for the backend container
 resources:
   requests:
+    # resources.requests.cpu is the minimum CPU the container is guaranteed
     cpu: 100m
+    # resources.requests.memory is the minimum memory the container is guaranteed
     memory: 128Mi
   limits:
+    # resources.limits.cpu is the maximum CPU the container may use
     cpu: 200m
+    # resources.limits.memory is the maximum memory the container may use
     memory: 256Mi
 
+# readinessProbe configures the readiness probe
 readinessProbe:
+  # readinessProbe.path is the HTTP path that must return success
   path: /healthz
+  # readinessProbe.port is the port to probe
   port: 8080
+  # readinessProbe.initialDelaySeconds is how long to wait before the first probe
   initialDelaySeconds: 5
+  # readinessProbe.periodSeconds is how often to probe
   periodSeconds: 10
+  # readinessProbe.timeoutSeconds is how long to wait for a response
   timeoutSeconds: 3
+  # readinessProbe.failureThreshold is how many consecutive failures mark the Pod as not ready
   failureThreshold: 3
 
+# livenessProbe configures the liveness probe
 livenessProbe:
+  # livenessProbe.path is the HTTP path that must return success
   path: /healthz
+  # livenessProbe.port is the port to probe
   port: 8080
+  # livenessProbe.initialDelaySeconds is how long to wait before the first probe
   initialDelaySeconds: 15
+  # livenessProbe.periodSeconds is how often to probe
   periodSeconds: 20
+  # livenessProbe.timeoutSeconds is how long to wait for a response
   timeoutSeconds: 3
+  # livenessProbe.failureThreshold is how many consecutive failures trigger a restart
   failureThreshold: 3
 
+# autoscaling configures the HorizontalPodAutoscaler (HPA)
 autoscaling:
+  # autoscaling.minReplicas is the minimum number of replicas
   minReplicas: 3
+  # autoscaling.maxReplicas is the maximum number of replicas
   maxReplicas: 10
+  # autoscaling.targetCPUUtilizationPercentage is the target average CPU utilization (in %)
   targetCPUUtilizationPercentage: 70
+  # autoscaling.targetMemoryUtilizationPercentage is the target average memory utilization (in %)
   targetMemoryUtilizationPercentage: 70

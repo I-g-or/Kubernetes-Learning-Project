@@ -1,46 +1,77 @@
+# Default values for todo-app ingress
+
+# name is the name of the Ingress resource
 name: todo-app
 
+# host is the hostname that the Ingress will respond to
 host: igor1.pp.ua
 
+# ingressClassName selects which Ingress controller will handle this Ingress
 ingressClassName: nginx
 
+# tls configures TLS termination for the Ingress
 tls:
+  # tls.secretName is the name of the Secret that will hold the TLS certificate
   secretName: igor1-pp-ua-tls
 
-# cert-manager annotation: letsencrypt-prod or letsencrypt-staging
+# clusterIssuer is the name of the cert-manager ClusterIssuer to use
+# Common values: letsencrypt-prod or letsencrypt-staging
 clusterIssuer: letsencrypt-prod
 
+# annotations are additional annotations applied to the Ingress resource
+# These control the behaviour of the nginx Ingress controller
 annotations:
+  # Force HTTP → HTTPS redirect
   nginx.ingress.kubernetes.io/ssl-redirect: "true"
   nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 
-# Backend Service
+# backend configures the path that routes traffic to the backend service
 backend:
+  # backend.path is the URL path prefix for the API
   path: /api
+  # backend.pathType is the matching type (Prefix, Exact, ImplementationSpecific)
   pathType: Prefix
+  # backend.serviceName is the name of the backend Service
   serviceName: backend
+  # backend.servicePort is the port of the backend Service
   servicePort: 8080
 
-# Frontend Service
+# frontend configures the path that routes traffic to the frontend service
 frontend:
+  # frontend.path is the URL path for the React application
   path: /
+  # frontend.pathType is the matching type
   pathType: Prefix
+  # frontend.serviceName is the name of the frontend Service
   serviceName: frontend
+  # frontend.servicePort is the port of the frontend Service
   servicePort: 8080
 
-
+# clusterIssuers configures the cert-manager ClusterIssuers
+# You can enable staging (for testing) or production Let's Encrypt
 clusterIssuers:
+  # clusterIssuers.email is the email address registered with Let's Encrypt
   email: igorrosp@gmail.com
+  # clusterIssuers.ingressClass is the Ingress class used for the HTTP-01 challenge
   ingressClass: nginx
 
   staging:
+    # clusterIssuers.staging.enabled controls whether the staging ClusterIssuer is created
     enabled: false
+    # clusterIssuers.staging.name is the name of the staging ClusterIssuer
     name: letsencrypt-staging
+    # clusterIssuers.staging.server is the ACME server URL for Let's Encrypt staging
     server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # clusterIssuers.staging.privateKeySecretName is the Secret that stores the ACME account key
     privateKeySecretName: letsencrypt-staging-account-key
 
   prod:
+    # clusterIssuers.prod.enabled controls whether the production ClusterIssuer is created
     enabled: true
+    # clusterIssuers.prod.name is the name of the production ClusterIssuer
     name: letsencrypt-prod
+    # clusterIssuers.prod.server is the ACME server URL for Let's Encrypt production
     server: https://acme-v02.api.letsencrypt.org/directory
+    # clusterIssuers.prod.privateKeySecretName is the Secret that stores the ACME account key
     privateKeySecretName: letsencrypt-prod-account-key
+

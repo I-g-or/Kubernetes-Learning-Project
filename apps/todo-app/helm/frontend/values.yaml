@@ -1,59 +1,106 @@
+# Default values for todo-app frontend
+
+# frontendName is the base name used for Deployment, Service and related resources
 frontendName: frontend
 
+# image configures the container image for the frontend
 image:
+  # image.repository is the Docker image repository (without tag)
   repository: abdennour/go-to-do-frontend
+  # image.tag overrides the image tag whose default is the chart appVersion
   tag: rc
+  # image.pullPolicy defines when the image should be pulled
   pullPolicy: IfNotPresent
 
+# initContainer configures the init container that generates env.js from environment variables
 initContainer:
   image:
+    # initContainer.image.repository is the image used by the init container
     repository: abdennour/dotenv-to-js-object
+    # initContainer.image.tag is the tag of the init container image
     tag: 4ea
+    # initContainer.image.pullPolicy defines when the init image should be pulled
     pullPolicy: IfNotPresent
+  # initContainer.args are the command-line arguments passed to the init container
   args:
     - --dest=/data
     - --env-vars-filter=REACT_APP_
     - --run-as=job
+  # initContainer.volumeMountPath is where the generated env.js file is written
   volumeMountPath: /data
 
+# service configures the Kubernetes Service
 service:
+  # service.type is the Service type
   type: ClusterIP
+  # service.port is the port the Service listens
   port: 8080
+  # service.containerPort is the port the container listens on inside the Pod
   containerPort: 8080
 
+# volume configures the shared volume between init container and main container
 volume:
+  # volume.name is the name of the emptyDir volume
   name: data-env
+  # volume.mountPath is where the generated config is mounted in the main container
   mountPath: /opt/app/config
 
+# env contains environment variables that will be turned into a ConfigMap
 env:
+  # env.REACT_APP_API_ENDPOINT is the public URL of the backend API
   REACT_APP_API_ENDPOINT: "https://igor1.pp.ua"
 
+# resources defines CPU and memory requests/limits for the frontend container
 resources:
   requests:
+    # resources.requests.cpu is the minimum CPU the container is guaranteed
     cpu: 50m
+    # resources.requests.memory is the minimum memory the container is guaranteed
     memory: 64Mi
   limits:
+    # resources.limits.cpu is the maximum CPU the container may use
     cpu: 100m
+    # resources.limits.memory is the maximum memory the container may use
     memory: 128Mi
 
+# readinessProbe configures the readiness probe.
 readinessProbe:
+  # readinessProbe.path is the HTTP path that must return success
   path: /
+  # readinessProbe.port is the port to probe
   port: 8080
+  # readinessProbe.initialDelaySeconds is how long to wait before the first probe
   initialDelaySeconds: 5
+  # readinessProbe.periodSeconds is how often to probe
   periodSeconds: 10
+  # readinessProbe.timeoutSeconds is how long to wait for a response
   timeoutSeconds: 3
+  # readinessProbe.failureThreshold is how many consecutive failures mark the Pod as not ready
   failureThreshold: 3
 
+# livenessProbe configures the liveness probe
 livenessProbe:
+  # livenessProbe.path is the HTTP path that must return success
   path: /
+  # livenessProbe.port is the port to probe
   port: 8080
+  # livenessProbe.initialDelaySeconds is how long to wait before the first probe
   initialDelaySeconds: 15
+  # livenessProbe.periodSeconds is how often to probe
   periodSeconds: 20
+  # livenessProbe.timeoutSeconds is how long to wait for a response
   timeoutSeconds: 3
+  # livenessProbe.failureThreshold is how many consecutive failures trigger a restart
   failureThreshold: 3
 
+# autoscaling configures the HorizontalPodAutoscaler (HPA)
 autoscaling:
+  # autoscaling.minReplicas is the minimum number of replicas
   minReplicas: 2
+  # autoscaling.maxReplicas is the maximum number of replicas
   maxReplicas: 5
+  # autoscaling.targetCPUUtilizationPercentage is the target average CPU utilization (in %)
   targetCPUUtilizationPercentage: 70
+  # autoscaling.targetMemoryUtilizationPercentage is the target average memory utilization (in %)
   targetMemoryUtilizationPercentage: 70
+
