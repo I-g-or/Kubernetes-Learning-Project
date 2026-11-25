@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.frontendName }}
+  name: {{ include "frontend.fullname" . }}
   labels:
     {{- include "frontend.labels" . | nindent 4 }}
 spec:
@@ -21,7 +21,7 @@ spec:
             {{- toYaml .Values.initContainer.args | nindent 12 }}
           envFrom:
             - configMapRef:
-                name: {{ .Values.frontendName }}-config
+                name: {{ include "frontend.fullname" . }}-config
           volumeMounts:
             - name: {{ .Values.volume.name }}
               mountPath: {{ .Values.initContainer.volumeMountPath }}
@@ -36,7 +36,7 @@ spec:
                     - key: app.kubernetes.io/name
                       operator: In
                       values:
-                        - {{ .Values.frontendName }}
+                        - {{ include "frontend.fullname" . }}
                 topologyKey: kubernetes.io/hostname
 
       containers:

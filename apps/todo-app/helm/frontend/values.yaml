@@ -1,7 +1,10 @@
 # Default values for todo-app frontend
 
-# frontendName is the base name used for Deployment, Service and related resources
-frontendName: frontend
+# nameOverride replaces the name of the chart in the Chart.Name
+nameOverride: ""
+
+# fullnameOverride completely overrides the generated fullname
+fullnameOverride: ""
 
 # image configures the container image for the frontend
 image:

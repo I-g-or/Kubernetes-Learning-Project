@@ -5,9 +5,7 @@ kind: ClusterIssuer
 metadata:
   name: {{ .Values.clusterIssuers.staging.name }}
   labels:
-    app.kubernetes.io/name: cert-manager
-    app.kubernetes.io/component: cluster-issuer
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "ingress.labels" . | nindent 4 }}
 spec:
   acme:
     server: {{ .Values.clusterIssuers.staging.server }}
@@ -27,9 +25,7 @@ kind: ClusterIssuer
 metadata:
   name: {{ .Values.clusterIssuers.prod.name }}
   labels:
-    app.kubernetes.io/name: cert-manager
-    app.kubernetes.io/component: cluster-issuer
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "ingress.labels" . | nindent 4 }}
 spec:
   acme:
     server: {{ .Values.clusterIssuers.prod.server }}
